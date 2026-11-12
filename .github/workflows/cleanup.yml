@@ -1,5 +1,7 @@
 name: Retire superseded checks
 on:
+  push:
+    paths: ['.github/workflows/cleanup.yml']
   workflow_run:
     workflows: [CI]
     types: [completed]
@@ -7,21 +9,23 @@ permissions:
   actions: write
 jobs:
   retire:
-    if: github.event.workflow_run.event == 'push'
+    if: github.event_name == 'push' || github.event.workflow_run.event == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 3
     steps:
       - uses: actions/github-script@v7
         with:
           script: |
-            const finished = context.payload.workflow_run;
+            const branch = context.payload.workflow_run?.head_branch || context.ref.replace('refs/heads/', '');
             const { data } = await github.rest.actions.listWorkflowRuns({
               ...context.repo,
-              workflow_id: finished.workflow_id,
-              branch: finished.head_branch,
+              workflow_id: 'ci.yml',
+              branch,
               event: 'push',
               per_page: 100
             });
+            const finished = data.workflow_runs.find(run => run.conclusion === 'success');
+            if (!finished) return;
             for (const run of data.workflow_runs) {
               if (run.run_number < finished.run_number && run.status !== 'completed') {
                 core.info(`Retiring superseded run ${run.id}`);
@@ -33,4 +37,3 @@ jobs:
                 }
               }
             }
-

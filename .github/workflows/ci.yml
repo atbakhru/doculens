@@ -1,5 +1,12 @@
 name: CI
-on: [push, pull_request]
+on:
+  push:
+    paths-ignore: ['docs/**', 'README.md', '.github/workflows/cleanup.yml']
+  pull_request:
+    paths-ignore: ['docs/**', 'README.md', '.github/workflows/cleanup.yml']
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
