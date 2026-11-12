@@ -18,6 +18,8 @@ test("sample collection, visual search, duplicate review and layout clustering",
     .locator(".batch-select select")
     .selectOption({ label: "The sample collection" });
   await expect(page.locator(".page-card")).toHaveCount(16, { timeout: 90000 });
+  await page.getByRole("textbox", { name: "Search documents" }).fill("invoice");
+  await expect(page.locator(".page-card")).toHaveCount(6);
   await page.locator(".page-card").first().click();
   await expect(page.getByRole("dialog")).toBeVisible();
   await expect(page.locator(".similar-list button")).toHaveCount(5);

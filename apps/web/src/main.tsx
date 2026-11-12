@@ -141,17 +141,30 @@ function App() {
     if (batch) {
       const [p, b, r] = await Promise.all([
         api<{ pages: Page[]; total: number }>(
-          `/v1/pages?batch_id=${batch}&offset=${offset}&q=${encodeURIComponent(search)}`,
+          `/v1/pages?batch_id=${batch}&offset=${view === "Library" ? offset : 0}&limit=${view === "Layout clusters" ? 100 : 60}&q=${encodeURIComponent(view === "Library" ? search : "")}`,
         ),
         api<{ documents: Doc[] }>(`/v1/batches/${batch}`),
         api<Run[]>(`/v1/cluster-runs?batch_id=${batch}`),
       ]);
-      setPages(p.pages);
+      if (view === "Layout clusters" && p.total > 100) {
+        const remaining = await Promise.all(
+          Array.from(
+            { length: Math.ceil(Math.min(p.total, 500) / 100) - 1 },
+            (_, i) =>
+              api<{ pages: Page[] }>(
+                `/v1/pages?batch_id=${batch}&offset=${(i + 1) * 100}&limit=100`,
+              ),
+          ),
+        );
+        setPages([...p.pages, ...remaining.flatMap((result) => result.pages)]);
+      } else {
+        setPages(p.pages);
+      }
       setTotal(p.total);
       setDocs(b.documents);
       setRuns(r);
     }
-  }, [batch, offset, search, config, logged]);
+  }, [batch, offset, search, config, logged, view]);
   useEffect(() => {
     let active = true;
     const go = () =>
