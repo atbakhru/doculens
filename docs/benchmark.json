@@ -1,0 +1,81 @@
+{
+  "corpus": "synthetic-v1-eval-seed42",
+  "training": "synthetic-v1-seed713 (separate split)",
+  "pages": 16,
+  "resolution": "720x960",
+  "model": "sift128-layout128-v1-b5374a1cec40",
+  "vector_dimension": 256,
+  "duplicate_detection": {
+    "sha256": {
+      "tp": 1,
+      "fp": 0,
+      "fn": 4,
+      "tn": 115,
+      "precision": 1.0,
+      "recall": 0.2
+    },
+    "phash": {
+      "tp": 1,
+      "fp": 20,
+      "fn": 4,
+      "tn": 95,
+      "precision": 0.047619047619047616,
+      "recall": 0.2
+    },
+    "full_candidate_geometry_ink_pipeline": {
+      "tp": 4,
+      "fp": 0,
+      "fn": 1,
+      "tn": 115,
+      "precision": 1.0,
+      "recall": 0.8
+    }
+  },
+  "false_positive_examples": [],
+  "clustering": {
+    "eps": 0.11,
+    "min_samples": 2,
+    "clusters": 3,
+    "noise": 0,
+    "homogeneity": 1.0,
+    "adjusted_rand": 1.0,
+    "labels": [
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      2,
+      0,
+      0,
+      1,
+      2
+    ]
+  },
+  "feature_benchmark": {
+    "seconds": 2.70750269999553,
+    "pages_per_second": 5.909504725526744,
+    "workers": 1,
+    "warmup_excluded": true,
+    "includes": "decode, normalize, SIFT, BoVW, layout embedding",
+    "excludes": "training, PDF rendering, upload, persistence, duplicate verification"
+  },
+  "environment": {
+    "python": "3.12.14",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "processor": "Intel64 Family 6 Model 170 Stepping 4, GenuineIntel",
+    "opencv": "4.11.0",
+    "numpy": "2.2.6"
+  },
+  "limitations": [
+    "Tiny synthetic corpus; not representative of real-world scans.",
+    "Shared templates produce near-duplicate false positives; human review required.",
+    "No observed Kubernetes scaling or end-to-end throughput claim."
+  ]
+}

@@ -1,0 +1,14 @@
+fastapi==0.162.5
+uvicorn==0.54.0
+sqlalchemy==2.1.8
+psycopg[binary]==3.3.9
+boto3==1.44.2
+numpy==2.2.6
+opencv-python-headless==4.11.0.86
+scikit-learn==1.6.1
+pillow==13.0.0
+pypdfium2==5.15.2
+httpx==0.28.1
+pytest==8.3.5
+ruff==0.11.11
+starlette==1.10.0

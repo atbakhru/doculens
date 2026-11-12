@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.22)
+project(doculens_vision LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
+find_package(OpenCV 4 REQUIRED COMPONENTS core imgproc imgcodecs features2d)
+add_executable(doculens-extract extract.cpp)
+target_link_libraries(doculens-extract PRIVATE ${OpenCV_LIBS})
+target_compile_options(doculens-extract PRIVATE -Wall -Wextra -Werror)
