@@ -4,6 +4,8 @@
 
 The Python launcher uses SQLite + files in `.data/`. The Compose stack uses PostgreSQL + MinIO. Neither requires external accounts. The API and worker must use the same database URL, storage backend, codebook artifact, and software image. SQLite is a local-development option, not a shared Kubernetes volume design.
 
+MinIO Community Edition is now source-only, and its old Docker Hub images are unavailable. Compose builds the server from upstream revision `7aac2a2c5b7c882e68c1ce017d8256be2feea27f` using `infra/docker/minio.Dockerfile`; the first build needs extra time and network access for Go modules. Bucket initialization uses boto3. The upstream [MinIO source and AGPLv3 license](https://github.com/minio/minio/tree/7aac2a2c5b7c882e68c1ce017d8256be2feea27f) remain separate from DocuLens. Use a maintained managed S3 service for a hosted deployment.
+
 `python -m db.migrate` applies the idempotent initial schema. The initial tables are also created on local startup for convenience; subsequent incompatible schema changes should be explicit numbered migrations. Do not run destructive schema changes on live data.
 
 ## Private hosted demo

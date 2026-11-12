@@ -27,7 +27,7 @@ services:
     volumes: [postgres:/var/lib/postgresql/data]
     healthcheck: {test: [CMD-SHELL, "pg_isready -U doculens"], interval: 3s, timeout: 3s, retries: 20}
   minio:
-    image: minio/minio:RELEASE.2025-04-22T22-12-26Z
+    build: {context: ../.., dockerfile: infra/docker/minio.Dockerfile}
     command: server /data --console-address :9001
     environment:
       MINIO_ROOT_USER: doculens-local
@@ -36,10 +36,10 @@ services:
     ports: ["127.0.0.1:9000:9000", "127.0.0.1:9001:9001"]
     volumes: [objects:/data]
   minio-init:
-    image: minio/mc:RELEASE.2025-04-16T18-13-26Z
+    build: {context: ../.., dockerfile: infra/docker/Dockerfile}
     depends_on: [minio]
-    entrypoint: /bin/sh
-    command: ["-c", "until mc alias set local http://minio:9000 doculens-local doculens-local-secret; do sleep 2; done; mc mb --ignore-existing local/doculens"]
+    environment: *environment
+    command: [python, -m, scripts.init_storage]
   api:
     <<: *backend
     ports: ["127.0.0.1:8000:8000"]
